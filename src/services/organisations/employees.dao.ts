@@ -1,15 +1,15 @@
-import { EmployeeSignUp, Queryhelper } from './domain';
+import { Knex } from 'knex';
 
-const createEmployee = (db: Queryhelper) => (employee: EmployeeSignUp) => {
-  return db('employees').insert(employee).onConflict('employee_id').ignore();
-};
+import { EmployeesDAO, EmployeeSignUp } from './domain';
 
-const createEmployeeBulk =
-  (db: Queryhelper) => (employees: readonly EmployeeSignUp[]) => {
-    return db('employees').insert(employees).onConflict('employee_id').ignore();
-  };
+export class EmployeesDAOImp implements EmployeesDAO {
+  constructor(private db: Knex) {}
 
-export const EmployeesDAO = {
-  createEmployee,
-  createEmployeeBulk,
-};
+  create(employees: readonly EmployeeSignUp[]) {
+    return this.db('employees')
+      .insert(employees)
+      .onConflict('employee_id')
+      .ignore()
+      .returning(['employee_id']);
+  }
+}

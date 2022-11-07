@@ -22,6 +22,31 @@ export interface Organisation {
   readonly primary_contact_email: string;
 }
 
-export type EmployeeSignUp = Omit<Employee,'employee_id'| 'created_at'|'updated_at'>
+export type EmployeeSignUp = Omit<
+  Employee,
+  'created_at' | 'updated_at'
+>;
 
-export type OrganisationSignUp = Omit<Organisation,'org_id'>
+export type OrganisationSignUp = Omit<Organisation, 'org_id'>;
+
+export interface EmployeesDAO {
+  create: (
+    employees: readonly EmployeeSignUp[]
+  ) => Promise<{ employee_id: number }[]>;
+}
+
+export interface OrganisationDAO {
+  create: (organisation: OrganisationSignUp) => Promise<{ org_id: number }[]>;
+}
+
+export interface EmployeeService {
+  create: (employees: readonly EmployeeSignUp[]) => Promise<{
+    failedInserts: {
+      employee_id: number;
+      reason: string;
+    }[];
+    successfulInserts: {
+      employee_id: number;
+    }[];
+  }>;
+}
