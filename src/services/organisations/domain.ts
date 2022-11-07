@@ -22,10 +22,7 @@ export interface Organisation {
   readonly primary_contact_email: string;
 }
 
-export type EmployeeSignUp = Omit<
-  Employee,
-  'created_at' | 'updated_at'
->;
+export type EmployeeSignUp = Omit<Employee, 'created_at' | 'updated_at'>;
 
 export type OrganisationSignUp = Omit<Organisation, 'org_id'>;
 
@@ -49,4 +46,12 @@ export interface EmployeeService {
       employee_id: number;
     }[];
   }>;
+}
+
+export interface OrganisationService {
+  create: (organisation: OrganisationSignUp) => Promise<
+    {
+      org_id: number;
+    }[]
+  >;
 }
