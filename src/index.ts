@@ -4,6 +4,7 @@ import express from 'express';
 
 import { knexInstance } from './core/database/knex';
 import { logger } from './core/logger';
+import { errorHandler } from './middlewares/error';
 import { EmployeeHandler } from './services/organisations/api/employees.controller';
 import { OrganisationHandler } from './services/organisations/api/organisations.controller';
 import { EmployeeCSVParserImp } from './services/organisations/csv.parser';
@@ -44,6 +45,8 @@ async function startServer() {
     '/api/organisations/:org_id/members',
     employeeHandler.getByOrgIdPaginated
   );
+
+  app.use(errorHandler);
 
   app.listen(port, () => {
     logger.info(`server is listening on port ${port}`);
