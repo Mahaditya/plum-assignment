@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
+import { Knex } from 'knex'
 
-import { OrganisationDAO, OrganisationSignUp } from './domain';
+import { OrganisationDAO, OrganisationSignUp } from './domain'
 
 export class OrganisationDAOImp implements OrganisationDAO {
   constructor(private db: Knex) {}
@@ -10,7 +10,6 @@ export class OrganisationDAOImp implements OrganisationDAO {
       .insert(organisation)
       .onConflict('employee_id')
       .ignore()
-      .returning(['org_id']);
+      .returning(['org_id'])
   }
-  
 }
