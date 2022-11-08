@@ -4,10 +4,8 @@ import express from 'express';
 
 import { knexInstance } from './core/database/knex';
 import { logger } from './core/logger';
-import {
-  EmployeeHandler,
-  OrganisationHandler,
-} from './services/organisations/api/controllers';
+import { EmployeeHandler } from './services/organisations/api/employees.controller';
+import { OrganisationHandler } from './services/organisations/api/organisations.controller';
 import { EmployeeCSVParserImp } from './services/organisations/csv.parser';
 import { EmployeesDAOImp } from './services/organisations/employees.dao';
 import { EmployeeServiceImp } from './services/organisations/employees.service';
@@ -40,9 +38,12 @@ async function startServer() {
 
   app.post('/api/organisations/:org_id/members/upload', employeeHandler.create);
 
-  app.get('/api/organisations',organisationHandler.getPaginated)
+  app.get('/api/organisations', organisationHandler.getPaginated);
 
-  app.get('/api/organisations/:org_id/members',employeeHandler.getByOrgIdPaginated)
+  app.get(
+    '/api/organisations/:org_id/members',
+    employeeHandler.getByOrgIdPaginated
+  );
 
   app.listen(port, () => {
     logger.info(`server is listening on port ${port}`);
