@@ -8,8 +8,6 @@ export class OrganisationDAOImp implements OrganisationDAO {
   create(organisation: OrganisationSignUp) {
     return this.db('organisations')
       .insert(organisation)
-      .onConflict('employee_id')
-      .ignore()
       .returning(['org_id'])
   }
 }
