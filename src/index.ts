@@ -1,33 +1,48 @@
-import cors from 'cors'
-import express from 'express'
+import cors from 'cors';
+import csvHandler from 'csvtojson';
+import express from 'express';
 
-import {knexInstance} from './core/database/knex'
-import { logger } from './core/logger'
-import { OrganisationHandler } from './services/organisations/api/controllers'
-import { EmployeesDAOImp } from './services/organisations/employees.dao'
-import { EmployeesValidator } from './services/organisations/employees.validator'
-import { OrganisationServiceImp } from './services/organisations/organisation.service'
-import { OrganisationDAOImp } from './services/organisations/organisations.dao'
+import { knexInstance } from './core/database/knex';
+import { logger } from './core/logger';
+import {
+  EmployeeHandler,
+  OrganisationHandler,
+} from './services/organisations/api/controllers';
+import { EmployeeCSVParserImp } from './services/organisations/csv.parser';
+import { EmployeesDAOImp } from './services/organisations/employees.dao';
+import { EmployeeServiceImp } from './services/organisations/employees.service';
+import { EmployeesValidator } from './services/organisations/employees.validator';
+import { OrganisationServiceImp } from './services/organisations/organisation.service';
+import { OrganisationDAOImp } from './services/organisations/organisations.dao';
 
 async function startServer() {
-  const app = express()
-  const port = process.env.PORT || 8080
-  const db = await knexInstance()
-  const employeeDao = new EmployeesDAOImp(db)
-  const organisationDao = new OrganisationDAOImp(db)
-  const employeeValidator = new EmployeesValidator(employeeDao)
-  const organisationService = new OrganisationServiceImp(organisationDao)
-  const organisationHandler = OrganisationHandler({ organisationService })
+  const app = express();
+  const port = process.env.PORT || 8080;
+  const db = await knexInstance();
+  const employeeDao = new EmployeesDAOImp(db);
+  const organisationDao = new OrganisationDAOImp(db);
+  const employeeValidator = new EmployeesValidator(employeeDao);
+  const organisationService = new OrganisationServiceImp(organisationDao);
+  const employeeService = new EmployeeServiceImp(employeeValidator);
+  const organisationHandler = OrganisationHandler({ organisationService });
 
-  app.use(express.json())
-  app.use(cors())
-  app.get('/health', (req, res) => res.send('Server is running'))
+  const employeeCSVParser = new EmployeeCSVParserImp(csvHandler);
+  const employeeHandler = EmployeeHandler({
+    employeeService,
+    employeeCSVParser,
+  });
 
-  app.post('/api/organisations', organisationHandler.create)
+  app.use(express.json());
+  app.use(cors());
+  app.get('/health', (req, res) => res.send('Server is running'));
+
+  app.post('/api/organisations', organisationHandler.create);
+
+  app.post('/api/organisations/:org_id/members/upload', employeeHandler.create);
 
   app.listen(port, () => {
-    logger.info(`server is listening on port ${port}`)
-  })
+    logger.info(`server is listening on port ${port}`);
+  });
 }
 
-startServer()
+startServer();
