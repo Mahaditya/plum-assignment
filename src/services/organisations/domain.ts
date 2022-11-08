@@ -30,10 +30,16 @@ export interface EmployeesDAO {
   create: (
     employees: readonly EmployeeSignUp[]
   ) => Promise<{ employee_id: number }[]>;
+  getByOrgIdPaginated: (
+    orgId: number,
+    page: number,
+    size: number
+  ) => Promise<Employee[]>;
 }
 
 export interface OrganisationDAO {
   create: (organisation: OrganisationSignUp) => Promise<{ org_id: number }[]>;
+  getPaginated: (page: number, size: number) => Promise<Organisation[]>;
 }
 
 export interface EmployeeService {
@@ -49,6 +55,12 @@ export interface EmployeeService {
       employee_id: number;
     }[];
   }>;
+
+  getByOrgIdPaginated: (
+    orgId: number,
+    page: number,
+    size: number
+  ) => Promise<Employee[]>;
 }
 
 export interface OrganisationService {
@@ -57,6 +69,7 @@ export interface OrganisationService {
       org_id: number;
     }[]
   >;
+  getPaginated: (page: number, size: number) => Promise<Organisation[]>;
 }
 
 export interface EmployeeCSVParser {

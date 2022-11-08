@@ -44,8 +44,40 @@ export const OrganisationHandler = (services: {
     }
   };
 
+  const getPaginated = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | Response> => {
+    try {
+      const { query } = req;
+      const page = query.page ?? 0;
+      const size = query.size ?? 5;
+      const pageNumeric = Number(page);
+      const sizeNumeric = Number(size);
+      if (isNaN(pageNumeric)) {
+        return res.sendStatus(400);
+      }
+
+      if (isNaN(sizeNumeric)) {
+        return res.sendStatus(400);
+      }
+
+      const result = await services.organisationService.getPaginated(
+        pageNumeric,
+        sizeNumeric
+      );
+
+      res.json({
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
   return {
     create,
+    getPaginated
   };
 };
 
@@ -92,7 +124,49 @@ export const EmployeeHandler = (services: {
     }
   };
 
+
+  const getByOrgIdPaginated = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | Response> =>{
+    try {
+  
+      const { query ,params} = req;
+      const page = query.page ?? 0;
+      const size = query.size ?? 5;
+      const pageNumeric = Number(page);
+      const sizeNumeric = Number(size);
+      if (isNaN(pageNumeric)) {
+        return res.sendStatus(400);
+      }
+
+      if (isNaN(sizeNumeric)) {
+        return res.sendStatus(400);
+      }
+
+      const orgId = Number(params?.org_id)
+
+      if(isNaN(orgId)){
+        return res.sendStatus(400)
+      }
+
+      const result = await services.employeeService.getByOrgIdPaginated(
+        orgId,
+        pageNumeric,
+        sizeNumeric
+      );
+
+      res.json({
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   return {
     create,
+    getByOrgIdPaginated
   };
 };

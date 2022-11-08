@@ -177,4 +177,8 @@ export class EmployeesValidator implements EmployeeService {
       parsed: true,
     };
   }
+
+  async getByOrgIdPaginated(orgId: number, page: number, size: number) {
+    return this.dao.getByOrgIdPaginated(orgId, page, size);
+  }
 }

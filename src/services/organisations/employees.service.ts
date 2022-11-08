@@ -9,4 +9,8 @@ export class EmployeeServiceImp implements EmployeeService {
     logger.debug(employees);
     return this.validator.create(employees, orgId);
   }
+
+  getByOrgIdPaginated(orgId: number, page: number, size: number) {
+    return this.validator.getByOrgIdPaginated(orgId, page, size);
+  }
 }

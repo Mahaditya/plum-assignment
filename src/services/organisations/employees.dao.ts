@@ -1,6 +1,6 @@
-import { Knex } from 'knex'
+import { Knex } from 'knex';
 
-import { EmployeesDAO, EmployeeSignUp } from './domain'
+import { EmployeesDAO, EmployeeSignUp } from './domain';
 
 export class EmployeesDAOImp implements EmployeesDAO {
   constructor(private db: Knex) {}
@@ -10,6 +10,14 @@ export class EmployeesDAOImp implements EmployeesDAO {
       .insert(employees)
       .onConflict('employee_id')
       .ignore()
-      .returning(['employee_id'])
+      .returning(['employee_id']);
+  }
+
+  getByOrgIdPaginated(orgId: number, page = 0, size = 5) {
+    return this.db('employees')
+      .where('org_id', orgId)
+      .orderBy('employee_id', 'asc')
+      .limit(size)
+      .offset(page);
   }
 }

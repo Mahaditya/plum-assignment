@@ -40,6 +40,10 @@ async function startServer() {
 
   app.post('/api/organisations/:org_id/members/upload', employeeHandler.create);
 
+  app.get('/api/organisations',organisationHandler.getPaginated)
+
+  app.get('/api/organisations/:org_id/members',employeeHandler.getByOrgIdPaginated)
+
   app.listen(port, () => {
     logger.info(`server is listening on port ${port}`);
   });
